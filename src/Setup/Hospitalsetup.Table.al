@@ -41,6 +41,12 @@ table 50102 "Hospital Setup"
             TableRelation = "No. Series";
 
         }
+        field(7; "Bill No"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+            TableRelation = "No. Series";
+
+        }
 
     }
 

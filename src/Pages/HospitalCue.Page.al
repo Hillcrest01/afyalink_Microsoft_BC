@@ -41,6 +41,16 @@ page 50109 "Hospital Cues"
                         Page.Run(Page::HOSAppointment);
                     end;
                 }
+                field(TotalBills; Rec.TotalBills)
+                {
+                    ApplicationArea = All;
+                    DrillDown = true;
+
+                    trigger OnDrillDown()
+                    begin
+                        Page.Run(Page::"Bill Header");
+                    end;
+                }
 
             }
         }
@@ -52,6 +62,7 @@ page 50109 "Hospital Cues"
         PatientRec: Record Patients;
         DocRec: Record HOSDoctor;
         AppRec: Record HOSAppointment;
+        BillRec: Record "Bill Header";
     begin
         if not Rec.Get(1) then begin
             Rec.Init();
@@ -62,7 +73,7 @@ page 50109 "Hospital Cues"
         Rec.TotalPatients := PatientRec.Count();
         Rec.TotalDoctors := DocRec.Count();
         Rec.TotalAppointments := AppRec.Count();
-        // Rec.TotalBills := BillRec.Count();
+        Rec.TotalBills := BillRec.Count();
 
         Rec.Modify();
     end;

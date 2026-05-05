@@ -150,6 +150,8 @@ table 50104 HOSAppointment
         ModifiedAt := CurrentDateTime;
         ValidateCancellation();
         // ValidateDate();
+        // GetDoctorName();
+        // GetPatientName();
     end;
 
     trigger OnModify()
@@ -179,6 +181,24 @@ table 50104 HOSAppointment
     begin
         if ("Appointment Date" < Today) and (Status <> Status::Completed) then
             Error('Appointment date cannot be in the past unless status is Completed.');
+    end;
+
+    local procedure GetDoctorName()
+    var
+        Doctors: Record HOSDoctor;
+    begin
+        if Doctors.Get(Rec."Doctor No.") then begin
+            Rec."Doctor Name" := Doctors.Name;
+        end;
+    end;
+
+    local procedure GetPatientName()
+    var
+        Patients: Record Patients;
+    begin
+        if Patients.Get(Rec."Patient No.") then begin
+            Rec."Patient Name" := Patients."First Name" + ' ' + Patients."Other Names";
+        end;
     end;
 
 }

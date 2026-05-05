@@ -75,6 +75,20 @@ page 50108 "Hospital Role Center"
 
 
             }
+
+            group("Bills")
+            {
+                Caption = 'Bills';
+
+                action("All Bills")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Bill Header';
+                    RunObject = Page "Bill Header";
+                }
+
+
+            }
         }
     }
 

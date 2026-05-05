@@ -20,6 +20,7 @@ page 50101 "Hospital Setup"
                 field("Appointment No.s"; Rec."Appointment No.s") { }
                 field("Queue No.s"; Rec."Queue No.s") { }
                 field("Queue Token"; Rec."Queue Token") { }
+                field("Bill No"; Rec."Bill No") { }
             }
         }
     }

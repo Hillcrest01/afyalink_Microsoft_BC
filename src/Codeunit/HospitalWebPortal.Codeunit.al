@@ -51,8 +51,10 @@ codeunit 50105 "Hospital Webportal"
 
         Appointments.Init();
         Appointments."Appointment No." := NoSeries.GetNextNo(Setup."Appointment No.s", Today, true);
-        Appointments."Patient No." := PatientNo;
-        Appointments."Doctor No." := DoctorNo;
+        // Appointments."Patient No." := PatientNo;
+        Appointments.Validate("Patient No.", PatientNo);
+        // Appointments."Doctor No." := DoctorNo;
+        Appointments.Validate("Doctor No.", DoctorNo);
         Appointments."Appointment Date" := AppointmentDate;
         Appointments."Appointment Time" := AppointmentTime;
         Appointments."Booking Channel" := BookingChannel::Online;
