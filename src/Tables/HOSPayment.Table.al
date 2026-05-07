@@ -90,6 +90,7 @@ table 50109 "Patient Payments"
         CreatedAt := CurrentDateTime;
         if Amount <= 0 then
             Error('Amount must be greater than 0');
+        ReversePayment();
     end;
 
     trigger OnModify()
@@ -99,12 +100,54 @@ table 50109 "Patient Payments"
 
     trigger OnDelete()
     begin
-
+        ReversePayment();
     end;
 
     trigger OnRename()
     begin
 
+    end;
+
+    local procedure UpdateBillPayment()
+    var
+        BillHeader: Record "Bill Header";
+    begin
+        if BillHeader.Get(Rec."Bill No.") then begin
+            BillHeader."Paid Amount" := BillHeader."Paid Amount" + Rec.Amount;
+            BillHeader."Balance Due" := BillHeader."Net Payable" - BillHeader."Paid Amount";
+            if BillHeader."Balance Due" < 0 then
+                BillHeader."Balance Due" := 0;
+
+            if (BillHeader."Paid Amount" >= BillHeader."Net Payable") and (BillHeader."Net Payable" > 0)
+            then
+                BillHeader.Status := BillHeader.Status::Paid
+            else if BillHeader."Paid Amount" > 0 then
+                BillHeader.Status := BillHeader.Status::"Partially Paid";
+            BillHeader.Modify();
+        end;
+    end;
+
+    local procedure ReversePayment()
+    var
+        BillHeader: Record "Bill Header";
+    begin
+        if BillHeader.Get(Rec."Bill No.") then begin
+            BillHeader."Paid Amount" := BillHeader."Paid Amount" - Rec.Amount;
+            if BillHeader."Paid Amount" < 0 then
+                BillHeader."Paid Amount" := 0;
+            BillHeader."Balance Due" := BillHeader."Net Payable" - BillHeader."Paid Amount";
+            if BillHeader."Balance Due" < 0 then
+                BillHeader."Balance Due" := 0;
+
+            if BillHeader."Paid Amount" = 0 then
+                BillHeader.Status := BillHeader.Status::Posted
+            else if BillHeader."Paid Amount" < BillHeader."Net Payable" then
+                BillHeader.Status := BillHeader.Status::"Partially Paid"
+            else
+                BillHeader.Status := BillHeader.Status::Paid;
+
+            BillHeader.Modify();
+        end;
     end;
 
 }
